@@ -18,7 +18,6 @@ class UserController extends AbstractController
      */
     public function index()
     {
-
         $users = $this->getDoctrine()
             ->getRepository(User::class)
             ->findAll();
@@ -30,7 +29,6 @@ class UserController extends AbstractController
     }
 
 
-
     /**
      * @Route("/create", name="user_create")
      */
@@ -39,9 +37,7 @@ class UserController extends AbstractController
         $doctrineManager = $this->getDoctrine()->getManager();
 
         $user = new User();
-
-        $user
-            ->setName('admin')
+        $user->setName('admin')
             ->setPassword("123")
             ->setFullName("admin admin")
             ->setDescription("test user");
