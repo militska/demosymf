@@ -2,92 +2,96 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Entity(repositoryClass=UserRepository::class)
- * @ORM\Table(name="`user`")
+ * @ORM\Table(name="app_users")
+ * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=25, unique=true)
      */
-    private $name;
+    private $username;
 
     /**
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(type="string", length=64)
      */
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=254, unique=true)
      */
-    private $description;
+    private $email;
 
     /**
-     * @ORM\Column(type="string", length=200)
+     * @ORM\Column(name="is_active", type="boolean")
      */
-    private $full_name;
+    private $isActive;
 
-    public function getId(): ?int
+    public function __construct()
     {
-        return $this->id;
+        $this->isActive = true;
+        // may not be needed, see section on salt below
+        // $this->salt = md5(uniqid('', true));
     }
 
-    public function getName(): ?string
+    public function getUsername()
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function getSalt()
     {
-        $this->name = $name;
-
-        return $this;
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
     }
 
-    public function getPassword(): ?string
+    public function getPassword()
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function getRoles()
     {
-        $this->password = $password;
-
-        return $this;
+        return array('ROLE_USER');
     }
 
-    public function getDescription(): ?string
+    public function eraseCredentials()
     {
-        return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    /** @see \Serializable::serialize() */
+    public function serialize()
     {
-        $this->description = $description;
-
-        return $this;
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt,
+        ));
     }
 
-    public function getFullName(): ?string
+    /** @see \Serializable::unserialize() */
+    public function unserialize($serialized)
     {
-        return $this->full_name;
-    }
-
-    public function setFullName(string $full_name): self
-    {
-        $this->full_name = $full_name;
-
-        return $this;
+        list (
+            $this->id,
+            $this->username,
+            $this->password,
+            // see section on salt below
+            // $this->salt
+            ) = unserialize($serialized, array('allowed_classes' => false));
     }
 }
