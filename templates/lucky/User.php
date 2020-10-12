@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity2;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * @ORM\Table(name="app_users")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @ORM\Table(name="1app_users")
+ * @ORM\Entity(repositoryClass="1App\Repository\UserRepository")
  */
-class User implements UserInterface
+class User2 implements UserInterface
 {
-    /**
+    /**a
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
